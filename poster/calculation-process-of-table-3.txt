@@ -1,0 +1,37 @@
+Failure queue of the search tree from node 1 to node 2 is <x5=1, x5≠1, x3≠1> and decision queue is <x5=1, x5≠1, x3≠1, x2≠1>.
+
+We define two counters for each variable x:  
+    assignNum(x): number of times x is assigned (i.e., decision made on x).  
+    failureNum(x): number of failures attributed to x, computed differently under each strategy.
+
+MaxF = 5. The maximum number of failures to make the search backtrack to the root node which value equal the number of positive (left-branch) decisions from the root to the current failure node.
+
+FRB₀ 
+Only the first (left-branch) decision in a failure sequence is counted. The failure is attributed to the variable in that decision.
+→ For <x5=1, x5≠1, x3≠1>, only x5=1 is considered.
+→ failureNum(x5) += 1, assignNum(x5) += 1.
+
+FRB₁ 
+Each failure node—regardless of left or right branch—contributes independently: both failure and assignment counters are incremented for its decision variable.
+→ x5=1: failureNum(x5) +=1, assignNum(x5) +=1
+→ x5≠1: failureNum(x5) +=1, assignNum(x5) +=1
+→ x3≠1: failureNum(x3) +=1, assignNum(x3) +=1
+→ x2≠1: failureNum(x2) +=0, assignNum(x3) +=1
+→ Total: failureNum(x5)=2, assignNum(x5)=2, failureNum(x3)=1, assignNum(x3)=1, failureNum(x2)=0, assignNum(x2)=1
+
+FRB₂ 
+Starting from the first left-branch failure, the entire consecutive failure sequence is attributed to that variable. Only one assignment is counted.
+→ x5=1 initiates 3 consecutive failures (x5=1, x5≠1, x3≠1).
+→ failureNum(x5) += 3, assignNum(x5) += 1.
+
+FRB₃ 
+For each failure node, the length of its subsequent consecutive failure sequence (including itself) is added to failureNum of its variable, normalized by maxF. Assignment is counted per decision.
+→ x5=1 causes 3 failures → +3/5 = 0.6 to failureNum(x5), +1 to assignNum(x5)
+→ x5≠1 causes 2 failures → +2/5 = 0.4 to failureNum(x5), +1 to assignNum(x5)
+→ x3≠1 causes 1 failure → +1/5 = 0.2 to failureNum(x3), +1 to assignNum(x3)
+→ x2≠1: failureNum(x2) +=0, assignNum(x3) +=1
+→ Total: failureNum(x5) = 1.0, assignNum(x5) = 2, failureNum(x3) = 0.2, assignNum(x3) = 1, failureNum(x2)=0, assignNum(x2)=1
+
+FRB₄ 
+Only the first left-branch failure is considered; its full consecutive failure length is attributed to its variable, normalized by maxF, with one assignment counted.
+→ x5=1 initiates 3 consecutive failures → failureNum(x5) += 3/5 = 0.6, assignNum(x5) += 1.
